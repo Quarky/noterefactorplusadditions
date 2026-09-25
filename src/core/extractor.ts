@@ -1,4 +1,4 @@
-import { App, Editor, Notice, TFile, TFolder, normalizePath } from "obsidian";
+import { App, Editor, Notice, TFile } from "obsidian";
 import { ExtractProfile } from "../types";
 import { resolveConflict } from "./conflict";
 import { getSelectionInfo } from "./selection";
@@ -12,6 +12,7 @@ import { pickFile } from "../ui/file-suggester";
 import { UndoStack } from "./undo-stack";
 import { runTemplaterOnFile } from "../compat/templater";
 import { t } from "../i18n";
+import { ensureDestinationFolder, resolveDestinationFolder } from "./destination";
 
 export async function extractSelection(
 	app: App,
@@ -52,7 +53,7 @@ export async function extractSelection(
 		}
 
 		const folder = resolveDestinationFolder(profile, sourceFile);
-		await ensureFolder(app, folder);
+		await ensureDestinationFolder(app, folder);
 
 		const resolution = await resolveConflict(app, folder, basename, profile.conflictPolicy);
 		if (resolution.action === "cancel") return null;
@@ -177,7 +178,7 @@ export async function splitFromCursor(
 		}
 
 		const folder = resolveDestinationFolder(profile, sourceFile);
-		await ensureFolder(app, folder);
+		await ensureDestinationFolder(app, folder);
 
 		const resolution = await resolveConflict(app, folder, basename, profile.conflictPolicy);
 		if (resolution.action === "cancel") return null;
@@ -311,28 +312,6 @@ async function appendSelectionToExisting(
 
 	new Notice(t("notice.appended-to", { path: targetFile.path }));
 	return targetFile;
-}
-
-function resolveDestinationFolder(
-	profile: ExtractProfile,
-	sourceFile: TFile,
-): string {
-	switch (profile.destination.mode) {
-		case "fixed":
-			return normalizePath(profile.destination.path);
-		case "same-as-source": {
-			const parent = sourceFile.parent?.path ?? "";
-			return parent === "/" ? "" : parent;
-		}
-	}
-}
-
-async function ensureFolder(app: App, folder: string): Promise<void> {
-	if (!folder) return;
-	const existing = app.vault.getAbstractFileByPath(folder);
-	if (existing instanceof TFolder) return;
-	if (existing) throw new Error(`"${folder}" is a file, not a folder.`);
-	await app.vault.createFolder(folder);
 }
 
 export async function openAfterExtract(

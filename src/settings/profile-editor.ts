@@ -285,6 +285,10 @@ export class ProfileEditorModal extends Modal {
 						"same-as-source",
 						t("profile.destination.same-as-source"),
 					)
+					.addOption(
+						"source-subfolder",
+						t("profile.destination.source-subfolder"),
+					)
 					.addOption("fixed", t("profile.destination.fixed"))
 					.setValue(this.draft.destination.mode)
 					.onChange((mode) => {
@@ -295,7 +299,7 @@ export class ProfileEditorModal extends Modal {
 							};
 						} else {
 							this.draft.destination = {
-								mode: mode as "same-as-source",
+								mode: mode as "same-as-source" | "source-subfolder",
 							};
 						}
 						fixedPathEl.toggleClass("nrp-hidden", mode !== "fixed");

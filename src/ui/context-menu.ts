@@ -1,4 +1,10 @@
-import { Editor, MarkdownFileInfo, MarkdownView, Menu } from "obsidian";
+import {
+	Editor,
+	MarkdownFileInfo,
+	MarkdownView,
+	Menu,
+	TFolder,
+} from "obsidian";
 import { NrpPlugin } from "../commands";
 import {
 	profilesSortedByUsage,
@@ -7,6 +13,10 @@ import {
 } from "../settings/settings";
 import { extractSelection } from "../core/extractor";
 import { ProfileSuggester } from "./profile-suggester";
+import {
+	HeadingLevel,
+	splitFolderByHeadingLevel,
+} from "../core/folder-splitter";
 import { t } from "../i18n";
 
 export function registerContextMenu(plugin: NrpPlugin): void {
@@ -70,5 +80,45 @@ export function registerContextMenu(plugin: NrpPlugin): void {
 				}
 			},
 		),
+	);
+
+	plugin.registerEvent(
+		plugin.app.workspace.on("file-menu", (menu: Menu, file) => {
+			if (!plugin.settings.showContextMenu) return;
+			if (!(file instanceof TFolder)) return;
+
+			const sorted = profilesSortedByUsage(plugin.settings);
+			if (sorted.length === 0) return;
+
+			menu.addSeparator();
+
+			for (const level of [1, 2, 3, 4, 5, 6] as const) {
+				menu.addItem((item) => {
+					item
+						.setTitle(
+							t("ctx.split-folder-by-heading", {
+								level: String(level),
+							}),
+						)
+						.setIcon("folder-output")
+						.onClick(() => {
+							new ProfileSuggester(
+								plugin.app,
+								sorted,
+								async (profile) => {
+									incrementUsage(plugin.settings, profile.id);
+									await saveSettings(plugin, plugin.settings);
+									await splitFolderByHeadingLevel(
+										plugin.app,
+										profile,
+										file,
+										level as HeadingLevel,
+									);
+								},
+							).open();
+						});
+				});
+			}
+		}),
 	);
 }

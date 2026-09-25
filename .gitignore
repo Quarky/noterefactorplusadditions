@@ -1,0 +1,8 @@
+node_modules/
+main.js
+*.js.map
+.DS_Store
+data.json
+
+# 内部ドキュメント（設計・計画・レビュー等の日本語ドキュメントはここに集約）
+_docs/

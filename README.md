@@ -8,7 +8,7 @@ Extract selected text or entire heading sections into new notes — using config
 
 - **Selection extraction** — extract highlighted text into a new note
 - **Heading extraction** — extract the section under the cursor's heading
-- **Bulk split by heading level** — split an entire note at every H1, H2, or H3
+- **Bulk split by heading level** — split an entire note at every H1 through H6
 - **Split from cursor** — move everything from the cursor position to the end of the note into a new note
 - **Multiple profiles** — each profile is a preset combining all extraction settings; switch between them per operation
 - **Command palette and hotkeys** — a command is registered for each profile so you can assign hotkeys
@@ -38,7 +38,7 @@ Extract selected text or entire heading sections into new notes — using config
 | Extract selection (default profile) | Extracts the selection using the default profile |
 | Extract heading (choose profile…) | Extracts the heading section at the cursor |
 | Extract heading (default profile) | Same, using the default profile |
-| Split by H1/H2/H3 headings (choose profile…) | Splits the whole note at every heading of the given level |
+| Split by H1/H2/H3/H4/H5/H6 headings (choose profile…) | Splits the whole note at every heading of the given level |
 | Split from cursor (choose profile…) | Moves from the cursor to the end of the note into a new note |
 | Split from cursor (default profile) | Same, using the default profile |
 | Extract: {profile name} | One command per profile for direct hotkey assignment |

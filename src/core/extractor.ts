@@ -94,7 +94,7 @@ export async function extractSelection(
 			});
 		}
 
-		const link = app.fileManager.generateMarkdownLink(newFile, sourceFile.path);
+		const link = app.fileManager.generateMarkdownLink(newFile, sourceFile.path, undefined, basename);
 		editor.replaceRange(
 			buildSourceReplacement(profile, link, selection.content, basename),
 			selectionFrom,
@@ -219,7 +219,7 @@ export async function splitFromCursor(
 			});
 		}
 
-		const link = app.fileManager.generateMarkdownLink(newFile, sourceFile.path);
+		const link = app.fileManager.generateMarkdownLink(newFile, sourceFile.path, undefined, basename);
 		replaceInSource(buildSourceReplacement(profile, link, rawContent, basename));
 
 		await openAfterExtract(app, profile, newFile);

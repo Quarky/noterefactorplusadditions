@@ -261,7 +261,7 @@ async function doExtract(
 			});
 		}
 
-		const link = app.fileManager.generateMarkdownLink(newFile, sourceFile.path);
+		const link = app.fileManager.generateMarkdownLink(newFile, sourceFile.path, undefined, basename);
 		const replacement = buildSourceReplacement(profile, link, content, basename);
 
 		deleteRange(editor, range.startLine, effectiveEndLine);

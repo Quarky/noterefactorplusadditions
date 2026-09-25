@@ -1,6 +1,7 @@
 export type DestinationRule =
 	| { mode: "fixed"; path: string }
-	| { mode: "same-as-source" };
+	| { mode: "same-as-source" }
+	| { mode: "source-subfolder" };
 
 export type FilenameRule =
 	| { mode: "first-line" }

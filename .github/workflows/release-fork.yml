@@ -1,0 +1,44 @@
+name: Release Fork
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".release-trigger"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - id: version
+        run: echo "version=$(jq -r .version manifest.json)" >> "$GITHUB_OUTPUT"
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            gh release upload "$VERSION" main.js styles.css manifest.json --clobber
+          else
+            gh release create "$VERSION" \
+              --target "$GITHUB_SHA" \
+              --title "$VERSION" \
+              --notes "Note Refactor Plus fork: source-named destination folders, H1-H6 splitting, and whole-folder batch splitting." \
+              main.js styles.css manifest.json
+          fi

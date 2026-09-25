@@ -29,16 +29,43 @@ jobs:
       - run: pnpm build
       - id: version
         run: echo "version=$(jq -r .version manifest.json)" >> "$GITHUB_OUTPUT"
+      - name: Build install bundle
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          BUNDLE_DIR="note-refactor-plus-additions-${VERSION}"
+          mkdir -p "$BUNDLE_DIR"
+          cp main.js manifest.json styles.css install.sh "$BUNDLE_DIR/"
+          chmod +x "$BUNDLE_DIR/install.sh"
+          cat > "$BUNDLE_DIR/README-INSTALL.txt" <<'EOF'
+          Note Refactor Plus Additions
+
+          Default vault root:
+          /Users/somed/Documents/obs/shadowrun
+
+          Install:
+            1. Extract this ZIP.
+            2. Open Terminal in the extracted folder.
+            3. Run:
+               bash install.sh
+
+          The installer copies main.js, manifest.json, and styles.css into:
+          /Users/somed/Documents/obs/shadowrun/.obsidian/plugins/note-refactor-plus/
+
+          Existing data.json/settings are preserved.
+          Existing program files are backed up before replacement.
+
+          Optional: install to a different vault by passing its root:
+            bash install.sh "/path/to/other/vault"
+          EOF
+          zip -r "note-refactor-plus-additions-${VERSION}.zip" "$BUNDLE_DIR"
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
+          ZIP="note-refactor-plus-additions-${VERSION}.zip"
           if gh release view "$VERSION" >/dev/null 2>&1; then
-            gh release upload "$VERSION" main.js styles.css manifest.json --clobber
+            gh release upload "$VERSION" main.js styles.css manifest.json "$ZIP" --clobber
           else
-            gh release create "$VERSION" \
-              --target "$GITHUB_SHA" \
-              --title "$VERSION" \
-              --notes "Note Refactor Plus fork: source-named destination folders, H1-H6 splitting, and whole-folder batch splitting." \
-              main.js styles.css manifest.json
+            gh release create "$VERSION"               --target "$GITHUB_SHA"               --title "$VERSION"               --notes "Note Refactor Plus fork: source-named destination folders, H1-H6 splitting, whole-folder batch splitting, and a macOS install bundle."               main.js styles.css manifest.json "$ZIP"
           fi

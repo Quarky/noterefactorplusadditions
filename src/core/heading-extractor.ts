@@ -1,4 +1,4 @@
-import { App, Editor, HeadingCache, Notice, TFile, TFolder, normalizePath } from "obsidian";
+import { App, Editor, HeadingCache, Notice, TFile } from "obsidian";
 import { ExtractProfile } from "../types";
 import { sanitizeFilename } from "./filename";
 import { resolveConflict } from "./conflict";
@@ -12,6 +12,7 @@ import { UndoStack } from "./undo-stack";
 import { runTemplaterOnFile } from "../compat/templater";
 import { openAfterExtract } from "./extractor";
 import { t } from "../i18n";
+import { ensureDestinationFolder, resolveDestinationFolder } from "./destination";
 
 interface HeadingRange {
 	startLine: number;
@@ -52,7 +53,7 @@ export async function splitByHeadingLevel(
 	profile: ExtractProfile,
 	editor: Editor,
 	sourceFile: TFile,
-	level: 1 | 2 | 3,
+	level: 1 | 2 | 3 | 4 | 5 | 6,
 	undoStack: UndoStack,
 ): Promise<TFile[]> {
 	const allHeadings =
@@ -193,28 +194,6 @@ function findParentHeading(
 	return "";
 }
 
-function resolveFolder(
-	profile: ExtractProfile,
-	sourceFile: TFile,
-): string {
-	switch (profile.destination.mode) {
-		case "fixed":
-			return normalizePath(profile.destination.path);
-		case "same-as-source": {
-			const parent = sourceFile.parent?.path ?? "";
-			return parent === "/" ? "" : parent;
-		}
-	}
-}
-
-async function ensureFolder(app: App, folder: string): Promise<void> {
-	if (!folder) return;
-	const existing = app.vault.getAbstractFileByPath(folder);
-	if (existing instanceof TFolder) return;
-	if (existing) throw new Error(`"${folder}" is a file, not a folder.`);
-	await app.vault.createFolder(folder);
-}
-
 async function doExtract(
 	app: App,
 	profile: ExtractProfile,
@@ -227,8 +206,8 @@ async function doExtract(
 	suppressOpen = false,
 ): Promise<TFile | null> {
 	try {
-		const folder = resolveFolder(profile, sourceFile);
-		await ensureFolder(app, folder);
+		const folder = resolveDestinationFolder(profile, sourceFile);
+		await ensureDestinationFolder(app, folder);
 
 		// Snapshot before any edits (only when not part of a bulk split)
 		const sourceContentBefore = undoStack ? editor.getValue() : "";

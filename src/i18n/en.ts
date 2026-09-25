@@ -29,7 +29,8 @@ export const en = {
 
 	// ── Context menu ────────────────────────────────────────────────────────
 	"ctx.extract-with": "Extract: {name}",
-	"ctx.choose-profile": "Extract: choose profile…",\n\t"ctx.split-folder-by-heading": "Split folder by H{level} headings…",
+	"ctx.choose-profile": "Extract: choose profile…",
+	"ctx.split-folder-by-heading": "Split folder by H{level} headings…",
 
 	// ── Settings tab ─────────────────────────────────────────────────────────
 	"settings.global-heading": "Global settings",
@@ -73,7 +74,9 @@ export const en = {
 	"notice.no-content-below-cursor": "No content below cursor to split.",
 	"notice.no-headings": "No headings found in this note.",
 	"notice.cursor-in-heading": "Place the cursor inside a heading section.",
-	"notice.no-h-level": "No H{level} headings found in this note.",\n\t"notice.folder-split-no-matches": "No H{level} headings found in Markdown files directly inside this folder.",\n\t"notice.folder-split-count": "Split {files} files into {notes} notes. Failures: {failures}.",
+	"notice.no-h-level": "No H{level} headings found in this note.",
+	"notice.folder-split-no-matches": "No H{level} headings found in Markdown files directly inside this folder.",
+	"notice.folder-split-count": "Split {files} files into {notes} notes. Failures: {failures}.",
 	"notice.extract-failed": "Extract failed: {error}",
 	"notice.split-failed": "Split failed: {error}",
 	"notice.target-not-found": "Target file not found: {path}",
@@ -171,7 +174,8 @@ export const en = {
 
 	// ── Profile editor — destination ──────────────────────────────────────────
 	"profile.destination": "Destination",
-	"profile.destination.same-as-source": "Same folder as source note",\n\t"profile.destination.source-subfolder": "Subfolder named after source note",
+	"profile.destination.same-as-source": "Same folder as source note",
+	"profile.destination.source-subfolder": "Subfolder named after source note",
 	"profile.destination.fixed": "Fixed folder",
 	"profile.folder-path": "Folder path",
 	"profile.folder-path-desc":

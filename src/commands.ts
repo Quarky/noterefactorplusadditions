@@ -95,7 +95,7 @@ export function registerCommands(plugin: NrpPlugin): void {
 
 	// --- Bulk split commands ---
 
-	for (const level of [1, 2, 3] as const) {
+	for (const level of [1, 2, 3, 4, 5, 6] as const) {
 		plugin.addCommand({
 			id: `split-by-heading-${level}`,
 			name: t("cmd.split-by-heading", { level: String(level) }),

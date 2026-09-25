@@ -165,6 +165,8 @@ async function splitFileByHeadingLevel(
 		const link = app.fileManager.generateMarkdownLink(
 			newFile,
 			sourceFile.path,
+			undefined,
+			basename,
 		);
 		const replacement = buildSourceReplacement(
 			profile,
